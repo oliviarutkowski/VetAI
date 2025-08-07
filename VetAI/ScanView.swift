@@ -1,9 +1,51 @@
 import SwiftUI
 
 struct ScanView: View {
+    @State private var species: String = "dog"
+    @State private var symptoms: String = ""
+    @State private var wbc: String = ""
+    @State private var rbc: String = ""
+    @State private var glucose: String = ""
+    @State private var diagnosis: String = ""
+    @State private var confidence: String = ""
+
     var body: some View {
-        Text("Scan Screen")
-            .padding()
+        Form {
+            Picker("Species", selection: $species) {
+                Text("dog").tag("dog")
+                Text("cat").tag("cat")
+                Text("other").tag("other")
+            }
+
+            TextEditor(text: $symptoms)
+                .frame(minHeight: 100)
+
+            TextField("WBC Count", text: $wbc)
+                .keyboardType(.decimalPad)
+
+            TextField("RBC Count", text: $rbc)
+                .keyboardType(.decimalPad)
+
+            TextField("Glucose", text: $glucose)
+                .keyboardType(.decimalPad)
+
+            Button("Analyze") {
+                if symptoms.lowercased().contains("lethargy") {
+                    diagnosis = "Possible anemia"
+                    confidence = "70%"
+                } else {
+                    diagnosis = "No specific diagnosis"
+                    confidence = "N/A"
+                }
+            }
+
+            if !diagnosis.isEmpty {
+                VStack(alignment: .leading) {
+                    Text("Diagnosis: \(diagnosis)")
+                    Text("Confidence: \(confidence)")
+                }
+            }
+        }
     }
 }
 
