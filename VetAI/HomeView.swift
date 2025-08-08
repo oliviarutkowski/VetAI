@@ -5,13 +5,30 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            List(diagnosisHistory) { record in
-                NavigationLink(destination: DiagnosisDetailView(record: record)) {
-                    VStack(alignment: .leading) {
-                        Text(record.species)
-                        Text(record.diagnosisResult)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+            List {
+                Section {
+                    Text("Welcome back, Olivia!")
+                }
+
+                if let lastRecord = diagnosisHistory.last {
+                    Section {
+                        VStack(alignment: .leading) {
+                            Text(lastRecord.species)
+                            Text(lastRecord.diagnosisResult)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
+                ForEach(diagnosisHistory) { record in
+                    NavigationLink(destination: DiagnosisDetailView(record: record)) {
+                        VStack(alignment: .leading) {
+                            Text(record.species)
+                            Text(record.diagnosisResult)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
