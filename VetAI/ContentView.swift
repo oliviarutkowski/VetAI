@@ -1,16 +1,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var diagnosisHistory: [DiagnosisRecord] = []
+
     var body: some View {
         TabView {
-            HomeView()
+            HomeView(diagnosisHistory: $diagnosisHistory)
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
 
-            ScanView()
+            ScanView(diagnosisHistory: $diagnosisHistory)
                 .tabItem {
-                    Label("Scan", systemImage: "camera")
+                    Label("AI Diagnosis", systemImage: "stethoscope")
                 }
 
             ProfileView()
