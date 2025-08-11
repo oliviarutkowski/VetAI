@@ -7,8 +7,8 @@ struct ScanView: View {
     @State private var wbc: String = ""
     @State private var rbc: String = ""
     @State private var glucose: String = ""
-    @State private var result: String = ""
-    @State private var confidence: Double = 0
+    @State private var diagnosis: String = ""
+    @State private var confidenceScore: Int = 0
     @State private var selectedPet: Pet? = nil
 
     var body: some View {
@@ -40,17 +40,17 @@ struct ScanView: View {
 
             Button("Analyze") {
                 if symptoms.lowercased().contains("lethargy") {
-                    result = "Possible anemia"
-                    confidence = 0.7
+                    diagnosis = "Possible anemia"
+                    confidenceScore = 70
                 } else {
-                    result = "No specific diagnosis"
-                    confidence = 0
+                    diagnosis = "No specific diagnosis"
+                    confidenceScore = 0
                 }
 
                 let record = DiagnosisRecord(
                     species: species,
-                    result: result,
-                    confidence: confidence,
+                    diagnosis: diagnosis,
+                    confidenceScore: confidenceScore,
                     date: Date(),
                     petID: selectedPet?.id
                 )
@@ -64,10 +64,10 @@ struct ScanView: View {
                 selectedPet = nil
             }
 
-            if !result.isEmpty {
+            if !diagnosis.isEmpty {
                 VStack(alignment: .leading) {
-                    Text("Diagnosis: \(result)")
-                    Text("Confidence: \(confidence, format: .percent)")
+                    Text("Diagnosis: \(diagnosis)")
+                    Text("Confidence: \(confidenceScore)%")
                 }
             }
         }
