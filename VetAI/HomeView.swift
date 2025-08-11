@@ -15,9 +15,15 @@ struct HomeView: View {
                     if let lastRecord = appState.diagnosisHistory.last {
                         Section {
                             VStack(alignment: .leading) {
-                                Text(lastRecord.species.capitalized)
-                                    .font(.headline)
-                                Text(lastRecord.result)
+                                if let petID = lastRecord.petID,
+                                   let pet = appState.pets.first(where: { $0.id == petID }) {
+                                    Text(pet.name)
+                                        .font(.headline)
+                                } else {
+                                    Text(lastRecord.species.capitalized)
+                                        .font(.headline)
+                                }
+                                Text(lastRecord.diagnosis)
                                 Text(lastRecord.date, style: .date)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
@@ -28,9 +34,15 @@ struct HomeView: View {
                     ForEach(appState.diagnosisHistory) { record in
                         NavigationLink(destination: DiagnosisDetailView(record: record)) {
                             VStack(alignment: .leading) {
-                                Text(record.species.capitalized)
-                                    .font(.headline)
-                                Text(record.result)
+                                if let petID = record.petID,
+                                   let pet = appState.pets.first(where: { $0.id == petID }) {
+                                    Text(pet.name)
+                                        .font(.headline)
+                                } else {
+                                    Text(record.species.capitalized)
+                                        .font(.headline)
+                                }
+                                Text(record.diagnosis)
                                 Text(record.date, style: .date)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
@@ -55,8 +67,8 @@ struct HomeView: View {
     appState.diagnosisHistory = [
         DiagnosisRecord(
             species: "dog",
-            result: "Possible anemia",
-            confidence: 0.7
+            diagnosis: "Possible anemia",
+            confidenceScore: 70
         )
     ]
     return HomeView(selectedTab: .constant(0)).environmentObject(appState)
