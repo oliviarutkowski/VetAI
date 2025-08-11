@@ -5,16 +5,10 @@ struct DiagnosisDetailView: View {
 
     var body: some View {
         Form {
-            Section(header: Text("Inputs")) {
-                HStack { Text("Species"); Spacer(); Text(record.species) }
-                HStack { Text("Symptoms"); Spacer(); Text(record.symptoms) }
-                HStack { Text("WBC"); Spacer(); Text(record.wbc) }
-                HStack { Text("RBC"); Spacer(); Text(record.rbc) }
-                HStack { Text("Glucose"); Spacer(); Text(record.glucose) }
-            }
             Section(header: Text("Diagnosis")) {
                 HStack { Text("Result"); Spacer(); Text(record.result) }
-                HStack { Text("Confidence"); Spacer(); Text(record.confidence) }
+                HStack { Text("Confidence"); Spacer(); Text(record.confidence, format: .percent) }
+                HStack { Text("Date"); Spacer(); Text(record.date, style: .date) }
             }
         }
         .navigationTitle("Diagnosis Detail")
@@ -22,5 +16,5 @@ struct DiagnosisDetailView: View {
 }
 
 #Preview {
-    DiagnosisDetailView(record: DiagnosisRecord(species: "dog", symptoms: "lethargy", wbc: "5", rbc: "4", glucose: "100", result: "Possible anemia", confidence: "70%"))
+    DiagnosisDetailView(record: DiagnosisRecord(result: "Possible anemia", confidence: 0.7))
 }

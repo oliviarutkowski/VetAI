@@ -7,8 +7,8 @@ struct ScanView: View {
     @State private var wbc: String = ""
     @State private var rbc: String = ""
     @State private var glucose: String = ""
-    @State private var diagnosis: String = ""
-    @State private var confidence: String = ""
+    @State private var result: String = ""
+    @State private var confidence: Double = 0
 
     var body: some View {
         Form {
@@ -32,29 +32,24 @@ struct ScanView: View {
 
             Button("Analyze") {
                 if symptoms.lowercased().contains("lethargy") {
-                    diagnosis = "Possible anemia"
-                    confidence = "70%"
+                    result = "Possible anemia"
+                    confidence = 0.7
                 } else {
-                    diagnosis = "No specific diagnosis"
-                    confidence = "N/A"
+                    result = "No specific diagnosis"
+                    confidence = 0
                 }
 
                 let record = DiagnosisRecord(
-                    species: species,
-                    symptoms: symptoms,
-                    wbc: wbc,
-                    rbc: rbc,
-                    glucose: glucose,
-                    result: diagnosis,
+                    result: result,
                     confidence: confidence
                 )
                 appState.diagnosisHistory.append(record)
             }
 
-            if !diagnosis.isEmpty {
+            if !result.isEmpty {
                 VStack(alignment: .leading) {
-                    Text("Diagnosis: \(diagnosis)")
-                    Text("Confidence: \(confidence)")
+                    Text("Diagnosis: \(result)")
+                    Text("Confidence: \(confidence, format: .percent)")
                 }
             }
         }
