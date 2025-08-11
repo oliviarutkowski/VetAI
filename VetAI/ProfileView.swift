@@ -1,18 +1,16 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @State private var name = ""
-    @State private var email = ""
+    @EnvironmentObject var appState: AppState
     @State private var petName = ""
     @State private var petSpecies = ""
     @State private var petAge = ""
-    @State private var pets: [Pet] = []
 
     var body: some View {
-        Form {
+        List {
             Section(header: Text("User Info")) {
-                TextField("Name", text: $name)
-                TextField("Email", text: $email)
+                TextField("Name", text: $appState.ownerName)
+                TextField("Email", text: $appState.ownerEmail)
             }
 
             Section(header: Text("Add Pet")) {
@@ -22,7 +20,7 @@ struct ProfileView: View {
                 Button("Add Pet") {
                     if let age = Int(petAge) {
                         let pet = Pet(name: petName, species: petSpecies, age: age)
-                        pets.append(pet)
+                        appState.pets.append(pet)
                         petName = ""
                         petSpecies = ""
                         petAge = ""
@@ -31,22 +29,20 @@ struct ProfileView: View {
             }
 
             Section(header: Text("Pets")) {
-                if pets.isEmpty {
+                if appState.pets.isEmpty {
                     Text("No pets added yet")
                 } else {
-                    ScrollView {
+                    ForEach(appState.pets) { pet in
                         VStack(alignment: .leading) {
-                            ForEach(pets) { pet in
-                                VStack(alignment: .leading) {
-                                    Text(pet.name).font(.headline)
-                                    Text("\(pet.species), Age: \(pet.age)")
-                                        .font(.subheadline)
-                                }
-                                .padding(.vertical, 4)
-                            }
+                            Text(pet.name).font(.headline)
+                            Text("\(pet.species), Age: \(pet.age)")
+                                .font(.subheadline)
                         }
+                        .padding(.vertical, 4)
                     }
-                    .frame(maxHeight: 200)
+                    .onDelete { indexSet in
+                        appState.pets.remove(atOffsets: indexSet)
+                    }
                 }
             }
         }
@@ -54,5 +50,5 @@ struct ProfileView: View {
 }
 
 #Preview {
-    ProfileView()
+    ProfileView().environmentObject(AppState())
 }
