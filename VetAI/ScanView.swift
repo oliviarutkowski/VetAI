@@ -40,6 +40,7 @@ struct ScanView: View {
                 }
 
                 let record = DiagnosisRecord(
+                    species: species,
                     result: result,
                     confidence: confidence
                 )

@@ -16,6 +16,7 @@ struct Pet: Identifiable, Hashable {
 
 struct DiagnosisRecord: Identifiable {
     let id = UUID()
+    var species: String
     var result: String
     var confidence: Double
     var date: Date = Date()
