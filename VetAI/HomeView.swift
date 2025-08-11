@@ -9,12 +9,14 @@ struct HomeView: View {
             VStack {
                 List {
                     Section {
-                        Text("Welcome back, Olivia!")
+                        Text(appState.ownerName.isEmpty ? "Welcome back!" : "Welcome back, \(appState.ownerName)!")
                     }
 
                     if let lastRecord = appState.diagnosisHistory.last {
                         Section {
                             VStack(alignment: .leading) {
+                                Text(lastRecord.species.capitalized)
+                                    .font(.headline)
                                 Text(lastRecord.result)
                                 Text(lastRecord.date, style: .date)
                                     .font(.subheadline)
@@ -26,6 +28,8 @@ struct HomeView: View {
                     ForEach(appState.diagnosisHistory) { record in
                         NavigationLink(destination: DiagnosisDetailView(record: record)) {
                             VStack(alignment: .leading) {
+                                Text(record.species.capitalized)
+                                    .font(.headline)
                                 Text(record.result)
                                 Text(record.date, style: .date)
                                     .font(.subheadline)
@@ -50,6 +54,7 @@ struct HomeView: View {
     let appState = AppState()
     appState.diagnosisHistory = [
         DiagnosisRecord(
+            species: "dog",
             result: "Possible anemia",
             confidence: 0.7
         )
