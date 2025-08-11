@@ -16,7 +16,7 @@ struct HomeView: View {
                         Section {
                             VStack(alignment: .leading) {
                                 Text(lastRecord.species)
-                                Text(lastRecord.diagnosisResult)
+                                Text(lastRecord.result)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                             }
@@ -27,7 +27,7 @@ struct HomeView: View {
                         NavigationLink(destination: DiagnosisDetailView(record: record)) {
                             VStack(alignment: .leading) {
                                 Text(record.species)
-                                Text(record.diagnosisResult)
+                                Text(record.result)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                             }
@@ -55,7 +55,7 @@ struct HomeView: View {
                 wbc: "5",
                 rbc: "4",
                 glucose: "100",
-                diagnosisResult: "Possible anemia",
+                result: "Possible anemia",
                 confidence: "70%"
             )
         ]),
