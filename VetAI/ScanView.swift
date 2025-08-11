@@ -45,7 +45,7 @@ struct ScanView: View {
                     wbc: wbc,
                     rbc: rbc,
                     glucose: glucose,
-                    diagnosisResult: diagnosis,
+                    result: diagnosis,
                     confidence: confidence
                 )
                 diagnosisHistory.append(record)

@@ -13,7 +13,7 @@ struct DiagnosisDetailView: View {
                 HStack { Text("Glucose"); Spacer(); Text(record.glucose) }
             }
             Section(header: Text("Diagnosis")) {
-                HStack { Text("Result"); Spacer(); Text(record.diagnosisResult) }
+                HStack { Text("Result"); Spacer(); Text(record.result) }
                 HStack { Text("Confidence"); Spacer(); Text(record.confidence) }
             }
         }
@@ -22,5 +22,5 @@ struct DiagnosisDetailView: View {
 }
 
 #Preview {
-    DiagnosisDetailView(record: DiagnosisRecord(species: "dog", symptoms: "lethargy", wbc: "5", rbc: "4", glucose: "100", diagnosisResult: "Possible anemia", confidence: "70%"))
+    DiagnosisDetailView(record: DiagnosisRecord(species: "dog", symptoms: "lethargy", wbc: "5", rbc: "4", glucose: "100", result: "Possible anemia", confidence: "70%"))
 }

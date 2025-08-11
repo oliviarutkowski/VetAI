@@ -8,13 +8,6 @@ struct ProfileView: View {
     @State private var petAge = ""
     @State private var pets: [Pet] = []
 
-    struct Pet: Identifiable {
-        let id = UUID()
-        var name: String
-        var species: String
-        var age: String
-    }
-
     var body: some View {
         Form {
             Section(header: Text("User Info")) {
@@ -27,11 +20,13 @@ struct ProfileView: View {
                 TextField("Species", text: $petSpecies)
                 TextField("Age", text: $petAge)
                 Button("Add Pet") {
-                    let pet = Pet(name: petName, species: petSpecies, age: petAge)
-                    pets.append(pet)
-                    petName = ""
-                    petSpecies = ""
-                    petAge = ""
+                    if let age = Int(petAge) {
+                        let pet = Pet(name: petName, species: petSpecies, age: age)
+                        pets.append(pet)
+                        petName = ""
+                        petSpecies = ""
+                        petAge = ""
+                    }
                 }
             }
 
