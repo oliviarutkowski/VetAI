@@ -5,8 +5,11 @@ struct ScanView: View {
     @State private var species: String = "dog"
     @State private var symptoms: String = ""
     @State private var wbc: String = ""
+    @State private var wbcIsUnknown: Bool = true
     @State private var rbc: String = ""
+    @State private var rbcIsUnknown: Bool = true
     @State private var glucose: String = ""
+    @State private var glucoseIsUnknown: Bool = true
     @State private var diagnosis: String = ""
     @State private var confidenceScore: Int = 0
     @State private var selectedPet: Pet? = nil
@@ -14,9 +17,9 @@ struct ScanView: View {
     var body: some View {
         Form {
             Picker("Species", selection: $species) {
-                Text("dog").tag("dog")
-                Text("cat").tag("cat")
-                Text("other").tag("other")
+                Text("Dog").tag("dog")
+                Text("Cat").tag("cat")
+                Text("Other").tag("other")
             }
 
             Picker("Pet", selection: $selectedPet) {
@@ -26,17 +29,48 @@ struct ScanView: View {
                 }
             }
 
+            Picker("WBC", selection: $wbcIsUnknown) {
+                Text("Unknown").tag(true)
+                Text("Enter value").tag(false)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .onChange(of: wbcIsUnknown) { isUnknown in
+                if isUnknown { wbc = "" }
+            }
+            if !wbcIsUnknown {
+                TextField("WBC (×10⁹/L)", text: $wbc)
+                    .keyboardType(.decimalPad)
+            }
+
+            Picker("RBC", selection: $rbcIsUnknown) {
+                Text("Unknown").tag(true)
+                Text("Enter value").tag(false)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .onChange(of: rbcIsUnknown) { isUnknown in
+                if isUnknown { rbc = "" }
+            }
+            if !rbcIsUnknown {
+                TextField("RBC (×10¹²/L)", text: $rbc)
+                    .keyboardType(.decimalPad)
+            }
+
+            Picker("Glucose", selection: $glucoseIsUnknown) {
+                Text("Unknown").tag(true)
+                Text("Enter value").tag(false)
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .onChange(of: glucoseIsUnknown) { isUnknown in
+                if isUnknown { glucose = "" }
+            }
+            if !glucoseIsUnknown {
+                TextField("Glucose (mg/dL)", text: $glucose)
+                    .keyboardType(.decimalPad)
+            }
+
+            Text("What are your pet’s symptoms?")
             TextEditor(text: $symptoms)
                 .frame(minHeight: 100)
-
-            TextField("WBC Count", text: $wbc)
-                .keyboardType(.decimalPad)
-
-            TextField("RBC Count", text: $rbc)
-                .keyboardType(.decimalPad)
-
-            TextField("Glucose", text: $glucose)
-                .keyboardType(.decimalPad)
 
             Button("Analyze") {
                 if symptoms.lowercased().contains("lethargy") {
@@ -59,8 +93,11 @@ struct ScanView: View {
                 species = "dog"
                 symptoms = ""
                 wbc = ""
+                wbcIsUnknown = true
                 rbc = ""
+                rbcIsUnknown = true
                 glucose = ""
+                glucoseIsUnknown = true
                 selectedPet = nil
             }
 
