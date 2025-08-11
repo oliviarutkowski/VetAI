@@ -9,6 +9,7 @@ struct ScanView: View {
     @State private var glucose: String = ""
     @State private var result: String = ""
     @State private var confidence: Double = 0
+    @State private var selectedPet: Pet? = nil
 
     var body: some View {
         Form {
@@ -16,6 +17,13 @@ struct ScanView: View {
                 Text("dog").tag("dog")
                 Text("cat").tag("cat")
                 Text("other").tag("other")
+            }
+
+            Picker("Pet", selection: $selectedPet) {
+                Text("No specific pet").tag(nil as Pet?)
+                ForEach(appState.pets) { pet in
+                    Text(pet.name).tag(Optional(pet))
+                }
             }
 
             TextEditor(text: $symptoms)
@@ -42,9 +50,18 @@ struct ScanView: View {
                 let record = DiagnosisRecord(
                     species: species,
                     result: result,
-                    confidence: confidence
+                    confidence: confidence,
+                    date: Date(),
+                    petID: selectedPet?.id
                 )
                 appState.diagnosisHistory.append(record)
+
+                species = "dog"
+                symptoms = ""
+                wbc = ""
+                rbc = ""
+                glucose = ""
+                selectedPet = nil
             }
 
             if !result.isEmpty {
