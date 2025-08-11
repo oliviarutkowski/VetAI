@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Binding var diagnosisHistory: [DiagnosisRecord]
+    @EnvironmentObject var appState: AppState
     @Binding var selectedTab: Int
 
     var body: some View {
@@ -12,7 +12,7 @@ struct HomeView: View {
                         Text("Welcome back, Olivia!")
                     }
 
-                    if let lastRecord = diagnosisHistory.last {
+                    if let lastRecord = appState.diagnosisHistory.last {
                         Section {
                             VStack(alignment: .leading) {
                                 Text(lastRecord.species)
@@ -23,7 +23,7 @@ struct HomeView: View {
                         }
                     }
 
-                    ForEach(diagnosisHistory) { record in
+                    ForEach(appState.diagnosisHistory) { record in
                         NavigationLink(destination: DiagnosisDetailView(record: record)) {
                             VStack(alignment: .leading) {
                                 Text(record.species)
@@ -47,18 +47,17 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(
-        diagnosisHistory: .constant([
-            DiagnosisRecord(
-                species: "dog",
-                symptoms: "lethargy",
-                wbc: "5",
-                rbc: "4",
-                glucose: "100",
-                result: "Possible anemia",
-                confidence: "70%"
-            )
-        ]),
-        selectedTab: .constant(0)
-    )
+    let appState = AppState()
+    appState.diagnosisHistory = [
+        DiagnosisRecord(
+            species: "dog",
+            symptoms: "lethargy",
+            wbc: "5",
+            rbc: "4",
+            glucose: "100",
+            result: "Possible anemia",
+            confidence: "70%"
+        )
+    ]
+    return HomeView(selectedTab: .constant(0)).environmentObject(appState)
 }

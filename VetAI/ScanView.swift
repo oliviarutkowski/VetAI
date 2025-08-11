@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ScanView: View {
-    @Binding var diagnosisHistory: [DiagnosisRecord]
+    @EnvironmentObject var appState: AppState
     @State private var species: String = "dog"
     @State private var symptoms: String = ""
     @State private var wbc: String = ""
@@ -48,7 +48,7 @@ struct ScanView: View {
                     result: diagnosis,
                     confidence: confidence
                 )
-                diagnosisHistory.append(record)
+                appState.diagnosisHistory.append(record)
             }
 
             if !diagnosis.isEmpty {
@@ -62,5 +62,5 @@ struct ScanView: View {
 }
 
 #Preview {
-    ScanView(diagnosisHistory: .constant([]))
+    ScanView().environmentObject(AppState())
 }
