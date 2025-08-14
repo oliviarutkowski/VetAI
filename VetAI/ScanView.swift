@@ -18,11 +18,15 @@ struct ScanView: View {
 
     var body: some View {
         Form {
+            SectionHeader(title: "Species")
+
             Picker("Species", selection: $species) {
                 Text("Dog").tag("dog")
                 Text("Cat").tag("cat")
                 Text("Other").tag("other")
             }
+
+            SectionHeader(title: "Pet")
 
             Picker("Pet", selection: $selectedPet) {
                 Text("No specific pet").tag(nil as Pet?)
@@ -31,8 +35,11 @@ struct ScanView: View {
                 }
             }
 
+            SectionHeader(title: "Labs")
+
             Text("WBC (×10⁹/L)")
-                .font(.headline)
+                .font(Typography.section)
+                .foregroundColor(Palette.cyanDark)
             Picker("", selection: $wbcIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -44,10 +51,12 @@ struct ScanView: View {
             if !wbcIsUnknown {
                 TextField("Enter value", text: $wbc)
                     .keyboardType(.decimalPad)
+                    .font(Typography.body)
             }
 
             Text("RBC (×10¹²/L)")
-                .font(.headline)
+                .font(Typography.section)
+                .foregroundColor(Palette.cyanDark)
             Picker("", selection: $rbcIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -59,10 +68,12 @@ struct ScanView: View {
             if !rbcIsUnknown {
                 TextField("Enter value", text: $rbc)
                     .keyboardType(.decimalPad)
+                    .font(Typography.body)
             }
 
             Text("Glucose (mg/dL)")
-                .font(.headline)
+                .font(Typography.section)
+                .foregroundColor(Palette.cyanDark)
             Picker("", selection: $glucoseIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -74,10 +85,13 @@ struct ScanView: View {
             if !glucoseIsUnknown {
                 TextField("Enter value", text: $glucose)
                     .keyboardType(.decimalPad)
+                    .font(Typography.body)
             }
 
-            Text("What are your pet’s symptoms?")
+            SectionHeader(title: "Symptoms")
+
             TextEditor(text: $symptoms)
+                .font(Typography.body)
                 .focused($isSymptomsFocused)
                 .frame(minHeight: 100)
 
@@ -109,11 +123,14 @@ struct ScanView: View {
                 glucoseIsUnknown = true
                 selectedPet = nil
             }
+            .buttonStyle(PrimaryButtonStyle())
 
             if !diagnosis.isEmpty {
                 VStack(alignment: .leading) {
                     Text("Diagnosis: \(diagnosis)")
+                        .font(Typography.body)
                     Text("Confidence: \(confidenceScore)%")
+                        .font(Typography.body)
                 }
             }
         }
