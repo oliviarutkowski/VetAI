@@ -8,21 +8,33 @@ struct ContentView: View {
             HomeView(selectedTab: $selectedTab)
                 .tabItem {
                     Label("Home", systemImage: "house")
+                        .foregroundColor(selectedTab == 0 ? Palette.primary : Palette.cyanDark.opacity(0.6))
                 }
                 .tag(0)
 
-            ScanView()
-                .tabItem {
-                    Label("AI Diagnosis", systemImage: "stethoscope")
-                }
-                .tag(1)
+            NavigationStack {
+                ScanView()
+                    .navigationTitle("AI Diagnosis")
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .tabItem {
+                Label("AI Diagnosis", systemImage: "stethoscope")
+                    .foregroundColor(selectedTab == 1 ? Palette.primary : Palette.cyanDark.opacity(0.6))
+            }
+            .tag(1)
 
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
-                .tag(2)
+            NavigationStack {
+                ProfileView()
+                    .navigationTitle("Profile")
+                    .navigationBarTitleDisplayMode(.inline)
+            }
+            .tabItem {
+                Label("Profile", systemImage: "person")
+                    .foregroundColor(selectedTab == 2 ? Palette.primary : Palette.cyanDark.opacity(0.6))
+            }
+            .tag(2)
         }
+        .tint(Palette.primary)
     }
 }
 

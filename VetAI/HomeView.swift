@@ -58,6 +58,7 @@ struct HomeView: View {
                 .padding()
             }
             .navigationTitle("History")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
