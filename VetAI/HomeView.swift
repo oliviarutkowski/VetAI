@@ -11,9 +11,12 @@ struct HomeView: View {
                     Section {
                         Text(appState.ownerName.isEmpty ? "Welcome back!" : "Welcome back, \(appState.ownerName)!")
                     }
+                    .listRowBackground(Color.clear)
+                    .card()
 
                     if let lastRecord = appState.diagnosisHistory.last {
                         Section {
+                            SectionHeader(title: "Recent Diagnosis")
                             VStack(alignment: .leading) {
                                 if let petID = lastRecord.petID,
                                    let pet = appState.pets.first(where: { $0.id == petID }) {
@@ -24,11 +27,14 @@ struct HomeView: View {
                                         .font(.headline)
                                 }
                                 Text(lastRecord.diagnosis)
+                                    .foregroundColor(Palette.blueAccent)
                                 Text(lastRecord.date, style: .date)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                             }
                         }
+                        .listRowBackground(Color.clear)
+                        .card()
                     }
 
                     ForEach(appState.diagnosisHistory) { record in
@@ -48,13 +54,17 @@ struct HomeView: View {
                                     .foregroundColor(.secondary)
                             }
                         }
+                        .listRowBackground(Color.clear)
+                        .card()
                     }
                 }
+                .scrollContentBackground(.hidden)
+                .background(Palette.surfaceAlt)
 
                 Button("Start New Diagnosis") {
                     selectedTab = 1
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(PrimaryButtonStyle())
                 .padding()
             }
             .navigationTitle("History")
