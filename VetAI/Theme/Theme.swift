@@ -5,15 +5,8 @@ import UIKit
 #endif
 
 enum Palette {
-    static let primary: Color = {
-        #if canImport(UIKit)
-        if let uiColor = UIColor(named: "PrimaryGreen") {
-            return Color(uiColor)
-        }
-        #endif
-        return Color(hex: "#329E7B")
-    }()
-    static let surface = Color.white
+    static let primary = Color("PrimaryGreen")
+    static let surface = Color("Surface")
     static let cyanDark = Color("CyanDark") // TODO: refine hex
     static let blueAccent = Color("BlueAccent") // TODO: refine hex
     static let surfaceAlt = Color(light: .init(white: 0.97), dark: .init(white: 0.12))
