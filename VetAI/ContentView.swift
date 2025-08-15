@@ -7,8 +7,8 @@ struct ContentView: View {
         TabView(selection: $selectedTab) {
             HomeView(selectedTab: $selectedTab)
                 .tabItem {
-                    Label("Home", systemImage: "house")
-                        .foregroundColor(selectedTab == 0 ? Palette.primary : Palette.cyanDark.opacity(0.6))
+                      Label("Home", systemImage: "house")
+                          .foregroundColor(selectedTab == 0 ? .primary : .secondary)
                 }
                 .tag(0)
 
@@ -18,8 +18,8 @@ struct ContentView: View {
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem {
-                Label("AI Diagnosis", systemImage: "stethoscope")
-                    .foregroundColor(selectedTab == 1 ? Palette.primary : Palette.cyanDark.opacity(0.6))
+                  Label("AI Diagnosis", systemImage: "stethoscope")
+                      .foregroundColor(selectedTab == 1 ? .primary : .secondary)
             }
             .tag(1)
 
@@ -29,8 +29,8 @@ struct ContentView: View {
                     .navigationBarTitleDisplayMode(.inline)
             }
             .tabItem {
-                Label("Profile", systemImage: "person")
-                    .foregroundColor(selectedTab == 2 ? Palette.primary : Palette.cyanDark.opacity(0.6))
+                  Label("Profile", systemImage: "person")
+                      .foregroundColor(selectedTab == 2 ? .primary : .secondary)
             }
             .tag(2)
         }
