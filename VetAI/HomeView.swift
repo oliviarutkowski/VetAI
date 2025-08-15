@@ -26,8 +26,8 @@ struct HomeView: View {
                                     Text(lastRecord.species.capitalized)
                                         .font(.headline)
                                 }
-                                Text(lastRecord.diagnosis)
-                                    .foregroundColor(Palette.blueAccent)
+                                  Text(lastRecord.diagnosis)
+                                      .foregroundColor(.primary)
                                 Text(lastRecord.date, style: .date)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)

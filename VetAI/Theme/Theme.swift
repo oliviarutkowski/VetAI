@@ -9,7 +9,25 @@ enum Palette {
     static let surface = Color("Surface")
     static let cyanDark = Color("CyanDark") // TODO: refine hex
     static let blueAccent = Color("BlueAccent") // TODO: refine hex
-    static let surfaceAlt = Color(light: .init(white: 0.97), dark: .init(white: 0.12))
+    static let surfaceAlt: Color = {
+        #if canImport(UIKit)
+        return Color(UIColor { traits in
+            if traits.userInterfaceStyle == .dark {
+                let base = UIColor.systemBackground
+                var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+                base.getRed(&r, green: &g, blue: &b, alpha: &a)
+                return UIColor(red: min(r + 0.12, 1),
+                                green: min(g + 0.12, 1),
+                                blue: min(b + 0.12, 1),
+                                alpha: a)
+            } else {
+                return UIColor(white: 0.97, alpha: 1)
+            }
+        })
+        #else
+        return Color(white: 0.97)
+        #endif
+    }()
 }
 
 enum Typography {

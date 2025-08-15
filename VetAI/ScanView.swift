@@ -37,9 +37,9 @@ struct ScanView: View {
 
             SectionHeader(title: "Labs")
 
-            Text("WBC (×10⁹/L)")
-                .font(Typography.section)
-                .foregroundColor(Palette.cyanDark)
+              Text("WBC (×10⁹/L)")
+                  .font(Typography.section)
+                  .foregroundColor(.primary)
             Picker("", selection: $wbcIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -54,9 +54,9 @@ struct ScanView: View {
                     .font(Typography.body)
             }
 
-            Text("RBC (×10¹²/L)")
-                .font(Typography.section)
-                .foregroundColor(Palette.cyanDark)
+              Text("RBC (×10¹²/L)")
+                  .font(Typography.section)
+                  .foregroundColor(.primary)
             Picker("", selection: $rbcIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -71,9 +71,9 @@ struct ScanView: View {
                     .font(Typography.body)
             }
 
-            Text("Glucose (mg/dL)")
-                .font(Typography.section)
-                .foregroundColor(Palette.cyanDark)
+              Text("Glucose (mg/dL)")
+                  .font(Typography.section)
+                  .foregroundColor(.primary)
             Picker("", selection: $glucoseIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
