@@ -10,13 +10,18 @@ struct ProfileView: View {
         List {
             Section(header: Text("User Info")) {
                 TextField("Name", text: $appState.ownerName)
+                    .font(Typography.body)
                 TextField("Email", text: $appState.ownerEmail)
+                    .font(Typography.body)
             }
 
             Section(header: Text("Add Pet")) {
                 TextField("Pet Name", text: $petName)
+                    .font(Typography.body)
                 TextField("Species", text: $petSpecies)
+                    .font(Typography.body)
                 TextField("Age", text: $petAge)
+                    .font(Typography.body)
                 Button("Add Pet") {
                     if let age = Int(petAge) {
                         let pet = Pet(name: petName, species: petSpecies, age: age)
