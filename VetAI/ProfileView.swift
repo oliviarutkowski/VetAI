@@ -8,14 +8,15 @@ struct ProfileView: View {
 
     var body: some View {
         List {
-            Section(header: Text("User Info")) {
+            Section(header: SectionHeader(title: "User Info")) {
                 TextField("Name", text: $appState.ownerName)
                     .font(Typography.body)
                 TextField("Email", text: $appState.ownerEmail)
                     .font(Typography.body)
             }
+            .listRowBackground(Palette.surfaceAlt)
 
-            Section(header: Text("Add Pet")) {
+            Section(header: SectionHeader(title: "Add Pet")) {
                 TextField("Pet Name", text: $petName)
                     .font(Typography.body)
                 TextField("Species", text: $petSpecies)
@@ -31,9 +32,11 @@ struct ProfileView: View {
                         petAge = ""
                     }
                 }
+                .buttonStyle(PrimaryButtonStyle())
             }
+            .listRowBackground(Palette.surfaceAlt)
 
-            Section(header: Text("Pets")) {
+            Section(header: SectionHeader(title: "Pets")) {
                 if appState.pets.isEmpty {
                     Text("No pets added yet")
                 } else {
@@ -50,7 +53,10 @@ struct ProfileView: View {
                     }
                 }
             }
+            .listRowBackground(Palette.surfaceAlt)
         }
+        .scrollContentBackground(.hidden)
+        .background(Palette.surfaceAlt)
     }
 }
 
