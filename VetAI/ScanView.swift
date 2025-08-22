@@ -122,6 +122,7 @@ struct ScanView: View {
                 glucose = ""
                 glucoseIsUnknown = true
                 selectedPet = nil
+                isSymptomsFocused = false
             }
             .buttonStyle(PrimaryButtonStyle())
 
@@ -135,11 +136,9 @@ struct ScanView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
-        .onTapGesture {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-        }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
                 Button("Done") {
                     isSymptomsFocused = false
                 }
