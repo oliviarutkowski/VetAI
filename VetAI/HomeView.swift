@@ -68,7 +68,9 @@ struct HomeView: View {
                 .padding()
             }
             .navigationTitle("History")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
         }
     }
 }
