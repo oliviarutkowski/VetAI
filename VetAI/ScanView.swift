@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct ScanView: View {
     @EnvironmentObject var appState: AppState
@@ -14,7 +13,9 @@ struct ScanView: View {
     @State private var diagnosis: String = ""
     @State private var confidenceScore: Int = 0
     @State private var selectedPet: Pet? = nil
+#if os(iOS)
     @FocusState private var isSymptomsFocused: Bool
+#endif
 
     var body: some View {
         Form {
@@ -50,7 +51,9 @@ struct ScanView: View {
             }
             if !wbcIsUnknown {
                 TextField("Enter value", text: $wbc)
+#if os(iOS)
                     .keyboardType(.decimalPad)
+#endif
                     .font(Typography.body)
             }
 
@@ -67,7 +70,9 @@ struct ScanView: View {
             }
             if !rbcIsUnknown {
                 TextField("Enter value", text: $rbc)
+#if os(iOS)
                     .keyboardType(.decimalPad)
+#endif
                     .font(Typography.body)
             }
 
@@ -84,7 +89,9 @@ struct ScanView: View {
             }
             if !glucoseIsUnknown {
                 TextField("Enter value", text: $glucose)
+#if os(iOS)
                     .keyboardType(.decimalPad)
+#endif
                     .font(Typography.body)
             }
 
@@ -92,7 +99,9 @@ struct ScanView: View {
 
             TextEditor(text: $symptoms)
                 .font(Typography.body)
+#if os(iOS)
                 .focused($isSymptomsFocused)
+#endif
                 .frame(minHeight: 100)
 
             Button("Analyze") {
@@ -122,7 +131,9 @@ struct ScanView: View {
                 glucose = ""
                 glucoseIsUnknown = true
                 selectedPet = nil
+#if os(iOS)
                 isSymptomsFocused = false
+#endif
             }
             .buttonStyle(PrimaryButtonStyle())
 
@@ -135,6 +146,7 @@ struct ScanView: View {
                 }
             }
         }
+#if os(iOS)
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
@@ -144,6 +156,7 @@ struct ScanView: View {
                 }
             }
         }
+#endif
     }
 }
 
