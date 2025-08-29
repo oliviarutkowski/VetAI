@@ -19,15 +19,13 @@ struct ScanView: View {
 
     var body: some View {
         Form {
-            SectionHeader(title: "Species")
+            SectionHeader("Species & Pet")
 
             Picker("Species", selection: $species) {
                 Text("Dog").tag("dog")
                 Text("Cat").tag("cat")
                 Text("Other").tag("other")
             }
-
-            SectionHeader(title: "Pet")
 
             Picker("Pet", selection: $selectedPet) {
                 Text("No specific pet").tag(nil as Pet?)
@@ -36,11 +34,11 @@ struct ScanView: View {
                 }
             }
 
-            SectionHeader(title: "Labs")
+            SectionHeader("Labs")
 
-              Text("WBC (×10⁹/L)")
-                  .font(Typography.section)
-                  .foregroundColor(.primary)
+            Text("WBC")
+                .font(Typography.section)
+                .foregroundColor(.primary)
             Picker("", selection: $wbcIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -50,16 +48,22 @@ struct ScanView: View {
                 if isUnknown { wbc = "" }
             }
             if !wbcIsUnknown {
-                TextField("Enter value", text: $wbc)
+                HStack {
+                    TextField("e.g., 6.0", text: $wbc)
 #if os(iOS)
-                    .keyboardType(.decimalPad)
+                        .keyboardType(.decimalPad)
 #endif
-                    .font(Typography.body)
+                        .font(Typography.body)
+                    Spacer()
+                    Text("×10⁹/L")
+                        .font(Typography.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
-              Text("RBC (×10¹²/L)")
-                  .font(Typography.section)
-                  .foregroundColor(.primary)
+            Text("RBC")
+                .font(Typography.section)
+                .foregroundColor(.primary)
             Picker("", selection: $rbcIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -69,16 +73,22 @@ struct ScanView: View {
                 if isUnknown { rbc = "" }
             }
             if !rbcIsUnknown {
-                TextField("Enter value", text: $rbc)
+                HStack {
+                    TextField("e.g., 6.0", text: $rbc)
 #if os(iOS)
-                    .keyboardType(.decimalPad)
+                        .keyboardType(.decimalPad)
 #endif
-                    .font(Typography.body)
+                        .font(Typography.body)
+                    Spacer()
+                    Text("×10¹²/L")
+                        .font(Typography.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
-              Text("Glucose (mg/dL)")
-                  .font(Typography.section)
-                  .foregroundColor(.primary)
+            Text("Glucose")
+                .font(Typography.section)
+                .foregroundColor(.primary)
             Picker("", selection: $glucoseIsUnknown) {
                 Text("Unknown").tag(true)
                 Text("Enter value").tag(false)
@@ -88,14 +98,20 @@ struct ScanView: View {
                 if isUnknown { glucose = "" }
             }
             if !glucoseIsUnknown {
-                TextField("Enter value", text: $glucose)
+                HStack {
+                    TextField("e.g., 6.0", text: $glucose)
 #if os(iOS)
-                    .keyboardType(.decimalPad)
+                        .keyboardType(.decimalPad)
 #endif
-                    .font(Typography.body)
+                        .font(Typography.body)
+                    Spacer()
+                    Text("mg/dL")
+                        .font(Typography.caption)
+                        .foregroundColor(.secondary)
+                }
             }
 
-            SectionHeader(title: "Symptoms")
+            SectionHeader("Symptoms")
 
             TextEditor(text: $symptoms)
                 .font(Typography.body)
@@ -135,14 +151,19 @@ struct ScanView: View {
                 isSymptomsFocused = false
 #endif
             }
+            .frame(maxWidth: .infinity)
             .buttonStyle(PrimaryButtonStyle())
 
             if !diagnosis.isEmpty {
-                VStack(alignment: .leading) {
-                    Text("Diagnosis: \(diagnosis)")
-                        .font(Typography.body)
-                    Text("Confidence: \(confidenceScore)%")
-                        .font(Typography.body)
+                Card {
+                    VStack(alignment: .leading, spacing: Spacing.sm) {
+                        Text(diagnosis)
+                            .font(Typography.section)
+                        ProgressView("Confidence", value: Double(confidenceScore), total: 100)
+                        Text("Saved to history")
+                            .font(Typography.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
         }

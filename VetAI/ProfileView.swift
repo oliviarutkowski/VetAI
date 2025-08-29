@@ -13,7 +13,7 @@ struct ProfileView: View {
 
     var body: some View {
         List {
-            Section(header: SectionHeader(title: "User Info")) {
+            Section(header: SectionHeader("User Info")) {
                 TextField("Name", text: $appState.ownerName)
                     .font(Typography.body)
                     .focused($focusedField, equals: .ownerName)
@@ -23,7 +23,7 @@ struct ProfileView: View {
             }
             .listRowBackground(Palette.surfaceAlt)
 
-            Section(header: SectionHeader(title: "Add Pet")) {
+            Section(header: SectionHeader("Add Pet")) {
                 TextField("Pet Name", text: $petName)
                     .font(Typography.body)
                     .focused($focusedField, equals: .petName)
@@ -48,7 +48,7 @@ struct ProfileView: View {
             }
             .listRowBackground(Palette.surfaceAlt)
 
-            Section(header: SectionHeader(title: "Pets")) {
+            Section(header: SectionHeader("Pets")) {
                 if appState.pets.isEmpty {
                     Text("No pets added yet")
                 } else {

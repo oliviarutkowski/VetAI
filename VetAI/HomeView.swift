@@ -21,7 +21,7 @@ struct HomeView: View {
                     if let lastRecord = appState.diagnosisHistory.last {
                         NavigationLink(destination: DiagnosisDetailView(record: lastRecord)) {
                             Card {
-                                SectionHeader(title: "Recent Diagnosis")
+                                SectionHeader("Recent Diagnosis")
                                 VStack(alignment: .leading) {
                                     if let petID = lastRecord.petID,
                                        let pet = appState.pets.first(where: { $0.id == petID }) {
