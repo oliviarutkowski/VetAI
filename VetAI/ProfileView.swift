@@ -68,7 +68,9 @@ struct ProfileView: View {
                         .focused($focusedField, equals: .petSpecies)
                     TextField("Age", text: $petAge)
                         .font(Typography.body)
+#if os(iOS)
                         .keyboardType(.numberPad)
+#endif
                         .focused($focusedField, equals: .petAge)
 
                     Button("Save") {
