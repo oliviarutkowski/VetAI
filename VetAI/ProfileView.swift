@@ -67,15 +67,19 @@ struct ProfileView: View {
             }
             .listRowBackground(Palette.surfaceAlt)
         }
+#if os(iOS)
         .scrollDismissesKeyboard(.interactively)
+#endif
         .scrollContentBackground(.hidden)
         .background(Palette.surfaceAlt)
+#if os(iOS)
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
                 Button("Done") { focusedField = nil }
             }
         }
+#endif
     }
 }
 
