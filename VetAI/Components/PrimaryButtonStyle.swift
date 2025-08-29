@@ -5,7 +5,7 @@ import SwiftUI
 
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .font(Typography.button)
+                .font(Typography.body)
                 .padding(.vertical, 12)
                 .padding(.horizontal, 20)
                 .foregroundColor(.white)
