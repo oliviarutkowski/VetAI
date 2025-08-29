@@ -12,10 +12,11 @@ struct HomeView: View {
                         VStack(alignment: .leading, spacing: Spacing.sm) {
                             if appState.ownerName.isEmpty {
                                 Text("Welcome back!")
+                                    .font(Typography.title)
                             } else {
                                 Text("Welcome back, \(appState.ownerName)!")
+                                    .font(Typography.title)
                             }
-                            .font(Typography.title)
                             Text("Ready for your next diagnosis?")
                                 .font(Typography.body)
                                 .foregroundColor(.secondary)
@@ -77,7 +78,6 @@ struct HomeView: View {
                     }
                 }
                 .padding(Spacing.l)
-                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: appState.diagnosisHistory)
             }
             .background(Palette.surfaceAlt)
             .navigationTitle("History")
