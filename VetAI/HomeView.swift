@@ -73,6 +73,7 @@ struct HomeView: View {
                     }
                 }
                 .padding(Spacing.l)
+                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: appState.diagnosisHistory)
             }
             .background(Palette.surfaceAlt)
             .navigationTitle("History")

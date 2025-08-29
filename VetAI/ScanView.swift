@@ -33,6 +33,7 @@ struct ScanView: View {
                     Text(pet.name).tag(Optional(pet))
                 }
             }
+            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: appState.pets)
 
             SectionHeader("Labs")
 
@@ -137,6 +138,9 @@ struct ScanView: View {
                     petID: selectedPet?.id
                 )
                 appState.diagnosisHistory.append(record)
+#if os(iOS)
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+#endif
 
                 species = "dog"
                 symptoms = ""
@@ -167,6 +171,7 @@ struct ScanView: View {
                 }
             }
         }
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: diagnosis)
 #if os(iOS)
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
