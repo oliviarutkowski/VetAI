@@ -15,7 +15,9 @@ struct ContentView: View {
             NavigationStack {
                 ScanView()
                     .navigationTitle("AI Diagnosis")
+                    #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                    #endif
             }
             .tabItem {
                   Label("AI Diagnosis", systemImage: "stethoscope")
@@ -26,7 +28,9 @@ struct ContentView: View {
             NavigationStack {
                 ProfileView()
                     .navigationTitle("Profile")
+                    #if os(iOS)
                     .navigationBarTitleDisplayMode(.inline)
+                    #endif
             }
             .tabItem {
                   Label("Profile", systemImage: "person")
