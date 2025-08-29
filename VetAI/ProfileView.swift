@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var appState: AppState
+    @State private var editingProfile = false
+    @State private var showAddPet = false
     @State private var petName = ""
     @State private var petSpecies = ""
     @State private var petAge = ""
@@ -12,77 +14,130 @@ struct ProfileView: View {
     }
 
     var body: some View {
-        List {
-            Section(header: SectionHeader("User Info")) {
-                TextField("Name", text: $appState.ownerName)
-                    .font(Typography.body)
-                    .focused($focusedField, equals: .ownerName)
-                TextField("Email", text: $appState.ownerEmail)
-                    .font(Typography.body)
-                    .focused($focusedField, equals: .ownerEmail)
-            }
-            .listRowBackground(Palette.surfaceAlt)
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Spacing.xl) {
+                    profileCard
 
-            Section(header: SectionHeader("Add Pet")) {
-                TextField("Pet Name", text: $petName)
-                    .font(Typography.body)
-                    .focused($focusedField, equals: .petName)
-                TextField("Species", text: $petSpecies)
-                    .font(Typography.body)
-                    .focused($focusedField, equals: .petSpecies)
-                TextField("Age", text: $petAge)
-                    .font(Typography.body)
-                    .focused($focusedField, equals: .petAge)
-                Button("Add Pet") {
-                    guard !petName.isEmpty, !petSpecies.isEmpty, let age = Int(petAge) else {
-                        return
-                    }
-                    let pet = Pet(name: petName, species: petSpecies, age: age)
-                    appState.pets.append(pet)
-                    petName = ""
-                    petSpecies = ""
-                    petAge = ""
-                    focusedField = nil
-                }
-                .buttonStyle(PrimaryButtonStyle())
-            }
-            .listRowBackground(Palette.surfaceAlt)
+                    SectionHeader("Your Pets")
 
-            Section(header: SectionHeader("Pets")) {
-                if appState.pets.isEmpty {
-                    Text("No pets added yet")
-                } else {
-                    ForEach(appState.pets) { pet in
-                        VStack(alignment: .leading) {
-                            Text(pet.name).font(.headline)
-                            Text("\(pet.species), Age: \(pet.age)")
-                                .font(.subheadline)
+                    if appState.pets.isEmpty {
+                        Text("No pets added yet")
+                            .font(Typography.body)
+                            .foregroundColor(.secondary)
+                    } else {
+                        VStack(spacing: Spacing.md) {
+                            ForEach(appState.pets) { pet in
+                                Card {
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(pet.name).font(.headline)
+                                            Text("\(pet.species), Age: \(pet.age)")
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
                         }
-                        .padding(.vertical, 4)
                     }
-                    .onDelete { indexSet in
-                        appState.pets.remove(atOffsets: indexSet)
+
+                    Button("Add Pet") { showAddPet = true }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(Spacing.l)
+            }
+#if os(iOS)
+            .scrollDismissesKeyboard(.interactively)
+#endif
+            .background(Palette.surfaceAlt)
+            .navigationTitle("Profile")
+        }
+        .sheet(isPresented: $showAddPet) {
+            NavigationStack {
+                VStack(spacing: Spacing.md) {
+                    TextField("Pet Name", text: $petName)
+                        .font(Typography.body)
+                        .focused($focusedField, equals: .petName)
+                    TextField("Species", text: $petSpecies)
+                        .font(Typography.body)
+                        .focused($focusedField, equals: .petSpecies)
+                    TextField("Age", text: $petAge)
+                        .font(Typography.body)
+                        .keyboardType(.numberPad)
+                        .focused($focusedField, equals: .petAge)
+
+                    Button("Save") {
+                        guard !petName.isEmpty,
+                              !petSpecies.isEmpty,
+                              let age = Int(petAge) else { return }
+                        let pet = Pet(name: petName, species: petSpecies, age: age)
+                        appState.pets.append(pet)
+                        petName = ""
+                        petSpecies = ""
+                        petAge = ""
+                        showAddPet = false
+                        focusedField = nil
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(.top, Spacing.md)
+
+                    Spacer()
+                }
+                .padding(Spacing.l)
+                .navigationTitle("Add Pet")
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Done") { focusedField = nil }
                     }
                 }
             }
-            .listRowBackground(Palette.surfaceAlt)
         }
-#if os(iOS)
-        .scrollDismissesKeyboard(.interactively)
-#endif
-        .scrollContentBackground(.hidden)
-        .background(Palette.surfaceAlt)
-#if os(iOS)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
+    }
+
+    private var profileCard: some View {
+        Card {
+            HStack(alignment: .top, spacing: Spacing.md) {
+                Image(systemName: "person.crop.circle")
+                    .font(.system(size: 60))
+
+                VStack(alignment: .leading, spacing: Spacing.sm) {
+                    if editingProfile {
+                        TextField("Name", text: $appState.ownerName)
+                            .font(Typography.body)
+                            .focused($focusedField, equals: .ownerName)
+                        TextField("Email", text: $appState.ownerEmail)
+                            .font(Typography.body)
+                            .focused($focusedField, equals: .ownerEmail)
+                    } else {
+                        Text(appState.ownerName.isEmpty ? "Your Name" : appState.ownerName)
+                            .font(Typography.body)
+                        Text(appState.ownerEmail.isEmpty ? "you@example.com" : appState.ownerEmail)
+                            .font(Typography.body)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
                 Spacer()
-                Button("Done") { focusedField = nil }
+
+                Button(editingProfile ? "Done" : "Edit") {
+                    editingProfile.toggle()
+                    if !editingProfile {
+                        focusedField = nil
+                    }
+                }
+                .font(Typography.body)
             }
         }
-#endif
     }
 }
 
 #Preview {
     ProfileView().environmentObject(AppState())
 }
+
