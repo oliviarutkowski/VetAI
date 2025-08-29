@@ -6,14 +6,14 @@ import SwiftUI
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .font(Typography.body)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
-                .foregroundColor(.white)
-                .background(
-                    Palette.primary.opacity(configuration.isPressed ? 0.9 : 1)
-                )
-                .cornerRadius(12)
-                .shadow(color: shadowColor, radius: 2, x: 0, y: 2)
+                .padding(.vertical, Spacing.sm)
+                .padding(.horizontal, Spacing.md)
+                .foregroundColor(Color.white)
+                .background(Palette.primary)
+                .cornerRadius(Radius.button)
+                .shadow(color: shadowColor, radius: Shadow.radius, x: Shadow.x, y: Shadow.y)
+                .scaleEffect(configuration.isPressed ? 0.98 : 1)
+                .opacity(configuration.isPressed ? 0.9 : 1)
         }
 
         private var shadowColor: Color {

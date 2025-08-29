@@ -45,6 +45,8 @@ struct Radius {
     static let lg: CGFloat = 16
     // Radius used for card components
     static let card: CGFloat = 16
+    // Radius used for primary buttons
+    static let button: CGFloat = md
 }
 
 struct Shadow {
