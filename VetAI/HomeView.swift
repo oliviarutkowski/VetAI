@@ -6,70 +6,79 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
+            ScrollView {
+                VStack(spacing: Spacing.xl) {
                     Card {
-                        Text(appState.ownerName.isEmpty ? "Welcome back!" : "Welcome back, \(appState.ownerName)!")
+                        VStack(alignment: .leading, spacing: Spacing.sm) {
+                            Text(appState.ownerName.isEmpty ? "Welcome back!" : "Welcome back, \(appState.ownerName)!")
+                                .font(Typography.title)
+                            Text("Ready for your next diagnosis?")
+                                .font(Typography.body)
+                                .foregroundColor(.secondary)
+                        }
                     }
-                    .listRowBackground(Color.clear)
 
                     if let lastRecord = appState.diagnosisHistory.last {
-                        Card {
-                            SectionHeader(title: "Recent Diagnosis")
-                            VStack(alignment: .leading) {
-                                if let petID = lastRecord.petID,
-                                   let pet = appState.pets.first(where: { $0.id == petID }) {
-                                    Text(pet.name)
-                                        .font(.headline)
-                                } else {
-                                    Text(lastRecord.species.capitalized)
-                                        .font(.headline)
-                                }
-                                Text(lastRecord.diagnosis)
-                                    .foregroundColor(.primary)
-                                Text(lastRecord.date, style: .date)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        .listRowBackground(Color.clear)
-                    }
-
-                    ForEach(appState.diagnosisHistory) { record in
-                        NavigationLink(destination: DiagnosisDetailView(record: record)) {
+                        NavigationLink(destination: DiagnosisDetailView(record: lastRecord)) {
                             Card {
+                                SectionHeader(title: "Recent Diagnosis")
                                 VStack(alignment: .leading) {
-                                    if let petID = record.petID,
+                                    if let petID = lastRecord.petID,
                                        let pet = appState.pets.first(where: { $0.id == petID }) {
                                         Text(pet.name)
                                             .font(.headline)
                                     } else {
-                                        Text(record.species.capitalized)
+                                        Text(lastRecord.species.capitalized)
                                             .font(.headline)
                                     }
-                                    Text(record.diagnosis)
-                                    Text(record.date, style: .date)
+                                    Text(lastRecord.diagnosis)
+                                        .foregroundColor(.primary)
+                                    Text(lastRecord.date, style: .date)
                                         .font(.subheadline)
                                         .foregroundColor(.secondary)
                                 }
                             }
                         }
-                        .listRowBackground(Color.clear)
+                    }
+
+                    Button("Start New Diagnosis") {
+                        selectedTab = 1
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .frame(maxWidth: .infinity)
+
+                    if appState.diagnosisHistory.count > 1 {
+                        VStack(spacing: Spacing.md) {
+                            ForEach(Array(appState.diagnosisHistory.dropLast())) { record in
+                                NavigationLink(destination: DiagnosisDetailView(record: record)) {
+                                    Card {
+                                        VStack(alignment: .leading) {
+                                            if let petID = record.petID,
+                                               let pet = appState.pets.first(where: { $0.id == petID }) {
+                                                Text(pet.name)
+                                                    .font(.headline)
+                                            } else {
+                                                Text(record.species.capitalized)
+                                                    .font(.headline)
+                                            }
+                                            Text(record.diagnosis)
+                                            Text(record.date, style: .date)
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-                .scrollContentBackground(.hidden)
-                .background(Palette.surfaceAlt)
-
-                Button("Start New Diagnosis") {
-                    selectedTab = 1
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding()
+                .padding(Spacing.l)
             }
+            .background(Palette.surfaceAlt)
             .navigationTitle("History")
-            #if os(iOS)
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
-            #endif
+#endif
         }
     }
 }
@@ -85,3 +94,4 @@ struct HomeView: View {
     ]
     return HomeView(selectedTab: .constant(0)).environmentObject(appState)
 }
+
