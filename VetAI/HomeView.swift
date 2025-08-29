@@ -8,14 +8,13 @@ struct HomeView: View {
         NavigationStack {
             VStack {
                 List {
-                    Section {
+                    Card {
                         Text(appState.ownerName.isEmpty ? "Welcome back!" : "Welcome back, \(appState.ownerName)!")
                     }
                     .listRowBackground(Color.clear)
-                    .card()
 
                     if let lastRecord = appState.diagnosisHistory.last {
-                        Section {
+                        Card {
                             SectionHeader(title: "Recent Diagnosis")
                             VStack(alignment: .leading) {
                                 if let petID = lastRecord.petID,
@@ -26,36 +25,36 @@ struct HomeView: View {
                                     Text(lastRecord.species.capitalized)
                                         .font(.headline)
                                 }
-                                  Text(lastRecord.diagnosis)
-                                      .foregroundColor(.primary)
+                                Text(lastRecord.diagnosis)
+                                    .foregroundColor(.primary)
                                 Text(lastRecord.date, style: .date)
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                             }
                         }
                         .listRowBackground(Color.clear)
-                        .card()
                     }
 
                     ForEach(appState.diagnosisHistory) { record in
                         NavigationLink(destination: DiagnosisDetailView(record: record)) {
-                            VStack(alignment: .leading) {
-                                if let petID = record.petID,
-                                   let pet = appState.pets.first(where: { $0.id == petID }) {
-                                    Text(pet.name)
-                                        .font(.headline)
-                                } else {
-                                    Text(record.species.capitalized)
-                                        .font(.headline)
+                            Card {
+                                VStack(alignment: .leading) {
+                                    if let petID = record.petID,
+                                       let pet = appState.pets.first(where: { $0.id == petID }) {
+                                        Text(pet.name)
+                                            .font(.headline)
+                                    } else {
+                                        Text(record.species.capitalized)
+                                            .font(.headline)
+                                    }
+                                    Text(record.diagnosis)
+                                    Text(record.date, style: .date)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
                                 }
-                                Text(record.diagnosis)
-                                Text(record.date, style: .date)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
                             }
                         }
                         .listRowBackground(Color.clear)
-                        .card()
                     }
                 }
                 .scrollContentBackground(.hidden)

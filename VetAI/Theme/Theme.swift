@@ -35,18 +35,24 @@ struct Spacing {
     static let sm: CGFloat = 8
     static let md: CGFloat = 16
     static let lg: CGFloat = 24
+    // New naming used by modern components
+    static let l: CGFloat = 16
 }
 
 struct Radius {
     static let sm: CGFloat = 8
     static let md: CGFloat = 12
     static let lg: CGFloat = 16
+    // Radius used for card components
+    static let card: CGFloat = 16
 }
 
 struct Shadow {
     static let radius: CGFloat = 2
     static let x: CGFloat = 0
     static let y: CGFloat = 2
+    // Color token for card shadow
+    static let card = Color.black.opacity(0.1)
 }
 
 enum Typography {
