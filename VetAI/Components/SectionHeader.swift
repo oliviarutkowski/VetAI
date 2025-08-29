@@ -6,7 +6,7 @@ struct SectionHeader: View {
     var body: some View {
         Text(title)
             .font(Typography.section)
-            .foregroundColor(.primary)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(Palette.cyanDark)
+            .padding(.bottom, 4)
     }
 }
