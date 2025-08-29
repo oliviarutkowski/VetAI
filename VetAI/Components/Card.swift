@@ -1,24 +1,23 @@
 import SwiftUI
 
-struct Card: ViewModifier {
-    @Environment(\.colorScheme) private var colorScheme
+/// A reusable container view that applies the app's card styling.
+///
+/// Usage:
+/// ```swift
+/// Card {
+///     VStack { ... }
+/// }
+/// ```
+struct Card<Content: View>: View {
+    /// The content displayed inside the card.
+    let content: () -> Content
 
-    func body(content: Content) -> some View {
-        content
-            .background(
-                Color(light: Palette.surface, dark: Palette.surfaceAlt)
-            )
-            .cornerRadius(16)
-            .shadow(color: shadowColor, radius: 4, x: 0, y: 2)
-    }
-
-    private var shadowColor: Color {
-        colorScheme == .dark ? Color.white.opacity(0.15) : Color.black.opacity(0.1)
-    }
-}
-
-extension View {
-    func card() -> some View {
-        modifier(Card())
+    var body: some View {
+        content()
+            .padding(Spacing.l)
+            .background(Palette.surface)
+            .cornerRadius(Radius.card)
+            .shadow(color: Shadow.card, radius: 12, x: 0, y: 6)
     }
 }
+
