@@ -10,10 +10,14 @@ import SwiftUI
 /// ```
 struct Card<Content: View>: View {
     /// The content displayed inside the card.
-    let content: () -> Content
+    private let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
 
     var body: some View {
-        content()
+        content
             .padding(Spacing.l)
             .background(Palette.surface)
             .cornerRadius(Radius.card)
