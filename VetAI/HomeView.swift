@@ -10,8 +10,12 @@ struct HomeView: View {
                 VStack(spacing: Spacing.xl) {
                     Card {
                         VStack(alignment: .leading, spacing: Spacing.sm) {
-                            Text(appState.ownerName.isEmpty ? "Welcome back!" : "Welcome back, \(appState.ownerName)!")
-                                .font(Typography.title)
+                            if appState.ownerName.isEmpty {
+                                Text("Welcome back!")
+                            } else {
+                                Text("Welcome back, \(appState.ownerName)!")
+                            }
+                            .font(Typography.title)
                             Text("Ready for your next diagnosis?")
                                 .font(Typography.body)
                                 .foregroundColor(.secondary)
