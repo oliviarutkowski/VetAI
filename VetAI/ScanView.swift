@@ -10,9 +10,11 @@ struct ScanView: View {
     @State private var rbcIsUnknown: Bool = true
     @State private var glucose: String = ""
     @State private var glucoseIsUnknown: Bool = true
-    @State private var diagnosis: String = ""
-    @State private var confidenceScore: Int = 0
     @State private var selectedPet: Pet? = nil
+    @State private var isSubmitting = false
+    @State private var triageResult: TriageResult? = nil
+    @State private var showError = false
+    @State private var errorMessage: String? = nil
 #if os(iOS)
     @FocusState private var isSymptomsFocused: Bool
 #endif
@@ -121,57 +123,23 @@ struct ScanView: View {
 #endif
                 .frame(minHeight: 100)
 
-            Button("Analyze") {
-                if symptoms.lowercased().contains("lethargy") {
-                    diagnosis = "Possible anemia"
-                    confidenceScore = 70
+            Button(action: { Task { await submit() } }) {
+                if isSubmitting {
+                    ProgressView()
                 } else {
-                    diagnosis = "No specific diagnosis"
-                    confidenceScore = 0
+                    Text("Submit Symptoms")
                 }
-
-                let record = DiagnosisRecord(
-                    species: species,
-                    diagnosis: diagnosis,
-                    confidenceScore: confidenceScore,
-                    date: Date(),
-                    petID: selectedPet?.id
-                )
-                appState.diagnosisHistory.append(record)
-#if os(iOS)
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
-
-                species = "dog"
-                symptoms = ""
-                wbc = ""
-                wbcIsUnknown = true
-                rbc = ""
-                rbcIsUnknown = true
-                glucose = ""
-                glucoseIsUnknown = true
-                selectedPet = nil
-#if os(iOS)
-                isSymptomsFocused = false
-#endif
             }
+            .disabled(isSubmitting)
             .frame(maxWidth: .infinity)
             .buttonStyle(PrimaryButtonStyle())
 
-            if !diagnosis.isEmpty {
-                Card {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        Text(diagnosis)
-                            .font(Typography.section)
-                        ProgressView("Confidence", value: Double(confidenceScore), total: 100)
-                        Text("Saved to history")
-                            .font(Typography.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
+            NavigationLink(destination: ResultsView(result: triageResult!), isActive: Binding(
+                get: { triageResult != nil },
+                set: { if !$0 { triageResult = nil } }
+            )) { EmptyView() }
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: diagnosis)
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: triageResult)
 #if os(iOS)
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
@@ -183,6 +151,41 @@ struct ScanView: View {
             }
         }
 #endif
+        .alert("Error", isPresented: $showError) {
+            Button("Retry") { Task { await submit() } }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text(errorMessage ?? "Unknown error")
+        }
+    }
+    
+    private func submit() async {
+        isSubmitting = true
+        defer { isSubmitting = false }
+        let payload = CasePayload(
+            petProfile: PetProfile(species: species, name: selectedPet?.name),
+            symptoms: [Symptom(text: symptoms)],
+            exposuresRisks: ExposuresRisks(medications: nil, toxins: nil),
+            wbc: Double(wbc),
+            rbc: Double(rbc),
+            glucose: Double(glucose)
+        )
+        let userMsg = PromptBuilder.user(from: payload)
+        for attempt in 0..<2 {
+            do {
+                let data = try await LLMClient().send(system: PromptBuilder.system, user: userMsg)
+                let result = try JSONDecoder().decode(TriageResult.self, from: data)
+                try TriageResultValidator.validate(result)
+                triageResult = result
+                return
+            } catch {
+                VetLog.e("Submission failed: \(error.localizedDescription)")
+                if attempt == 1 {
+                    errorMessage = error.localizedDescription
+                    showError = true
+                }
+            }
+        }
     }
 }
 

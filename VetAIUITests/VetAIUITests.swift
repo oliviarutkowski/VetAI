@@ -23,12 +23,14 @@ final class VetAIUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testResultsFlow() throws {
         let app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let symptoms = app.textViews.element
+        symptoms.tap()
+        symptoms.typeText("cough")
+        app.buttons["Submit Symptoms"].tap()
+        XCTAssertTrue(app.otherElements["ResultsView"].waitForExistence(timeout: 5))
     }
 
     @MainActor
