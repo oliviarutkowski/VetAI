@@ -115,7 +115,8 @@ struct ResultsView: View {
         .sheet(isPresented: $showShare) {
             let renderer = ImageRenderer(content: self)
             if let img = renderer.uiImage {
-                ShareLink(item: img, preview: SharePreview("Triage"))
+                ShareLink(item: TransferableImage(image: img),
+                          preview: SharePreview("Triage"))
             }
         }
     }

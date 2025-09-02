@@ -1,9 +1,15 @@
 import Foundation
 
-struct Differential: Codable, Identifiable {
+struct Differential: Codable, Identifiable, Hashable {
+    /// Locally generated identifier for displaying lists.
     let id = UUID()
     var condition: String
     var confidencePct: Int
+
+    enum CodingKeys: String, CodingKey {
+        case condition
+        case confidencePct
+    }
 }
 
 enum Urgency: String, Codable {
@@ -19,7 +25,7 @@ enum Urgency: String, Codable {
     }
 }
 
-struct TriageResult: Codable {
+struct TriageResult: Codable, Hashable {
     var urgency: Urgency
     var redFlags: [String]?
     var differentials: [Differential]?
