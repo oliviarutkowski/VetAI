@@ -11,20 +11,6 @@ struct ContentView: View {
                           .foregroundColor(selectedTab == 0 ? .primary : .secondary)
                 }
                 .tag(0)
-
-            NavigationStack {
-                SymptomFormView()
-                    .navigationTitle("Triage")
-                    #if os(iOS)
-                    .navigationBarTitleDisplayMode(.inline)
-                    #endif
-            }
-            .tabItem {
-                  Label("Triage", systemImage: "list.bullet")
-                      .foregroundColor(selectedTab == 1 ? .primary : .secondary)
-            }
-            .tag(1)
-
             NavigationStack {
                 ScanView()
                     .navigationTitle("AI Diagnosis")
@@ -34,9 +20,9 @@ struct ContentView: View {
             }
             .tabItem {
                   Label("AI Diagnosis", systemImage: "stethoscope")
-                      .foregroundColor(selectedTab == 2 ? .primary : .secondary)
+                      .foregroundColor(selectedTab == 1 ? .primary : .secondary)
             }
-            .tag(2)
+            .tag(1)
 
             NavigationStack {
                 ProfileView()
@@ -47,9 +33,9 @@ struct ContentView: View {
             }
             .tabItem {
                   Label("Profile", systemImage: "person")
-                      .foregroundColor(selectedTab == 3 ? .primary : .secondary)
+                      .foregroundColor(selectedTab == 2 ? .primary : .secondary)
             }
-            .tag(3)
+            .tag(2)
         }
         .tint(Palette.primary)
     }
