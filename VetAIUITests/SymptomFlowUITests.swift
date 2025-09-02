@@ -5,7 +5,7 @@ final class SymptomFlowUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        app.tabBars.buttons["Triage"].tap()
+        app.tabBars.buttons["AI Diagnosis"].tap()
         let field = app.textViews.matching(identifier: "symptomField").firstMatch
         field.tap()
         field.typeText("cough")

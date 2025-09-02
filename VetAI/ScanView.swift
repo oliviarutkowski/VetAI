@@ -3,7 +3,6 @@ import SwiftUI
 struct ScanView: View {
     @EnvironmentObject var appState: AppState
     @State private var species: String = "dog"
-    @State private var symptoms: String = ""
     @State private var wbc: String = ""
     @State private var wbcIsUnknown: Bool = true
     @State private var rbc: String = ""
@@ -13,9 +12,6 @@ struct ScanView: View {
     @State private var diagnosis: String = ""
     @State private var confidenceScore: Int = 0
     @State private var selectedPet: Pet? = nil
-#if os(iOS)
-    @FocusState private var isSymptomsFocused: Bool
-#endif
 
     var body: some View {
         Form {
@@ -113,22 +109,12 @@ struct ScanView: View {
 
             SectionHeader("Symptoms")
 
-            TextEditor(text: $symptoms)
-                .font(Typography.body)
-#if os(iOS)
-                .focused($isSymptomsFocused)
-#endif
-                .frame(minHeight: 100)
+            TriageSection()
 
             Button("Analyze") {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                    if symptoms.lowercased().contains("lethargy") {
-                        diagnosis = "Possible anemia"
-                        confidenceScore = 70
-                    } else {
-                        diagnosis = "No specific diagnosis"
-                        confidenceScore = 0
-                    }
+                    diagnosis = "No specific diagnosis"
+                    confidenceScore = 0
 
                     let record = DiagnosisRecord(
                         species: species,
@@ -140,7 +126,6 @@ struct ScanView: View {
                     appState.diagnosisHistory.append(record)
 
                     species = "dog"
-                    symptoms = ""
                     wbc = ""
                     wbcIsUnknown = true
                     rbc = ""
@@ -148,9 +133,6 @@ struct ScanView: View {
                     glucose = ""
                     glucoseIsUnknown = true
                     selectedPet = nil
-#if os(iOS)
-                    isSymptomsFocused = false
-#endif
                 }
 #if os(iOS)
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -174,14 +156,6 @@ struct ScanView: View {
         }
 #if os(iOS)
         .scrollDismissesKeyboard(.interactively)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") {
-                    isSymptomsFocused = false
-                }
-            }
-        }
 #endif
     }
 }

@@ -1,42 +1,39 @@
 import SwiftUI
 
-struct SymptomFormView: View {
+struct TriageSection: View {
     @State private var symptomText: String = ""
     @State private var isSubmitting = false
     @State private var result: TriageResult? = nil
     @State private var showToast = false
 
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                TextEditor(text: $symptomText)
-                    .accessibilityIdentifier("symptomField")
-                    .frame(height: 200)
-                    .border(Color.gray)
-                Button(action: submit) {
-                    if isSubmitting {
-                        ProgressView()
-                    } else {
-                        Text("Submit Symptoms")
-                    }
+        VStack(alignment: .leading) {
+            TextEditor(text: $symptomText)
+                .accessibilityIdentifier("symptomField")
+                .frame(height: 200)
+                .border(Color.gray)
+            Button(action: submit) {
+                if isSubmitting {
+                    ProgressView()
+                } else {
+                    Text("Submit Symptoms")
                 }
-                .disabled(isSubmitting)
-                .frame(maxWidth: .infinity)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.top, 16)
             }
-            .padding()
-            .navigationTitle("Symptoms")
-            .overlay(alignment: .bottom) {
-                if showToast {
-                    Text("Something went wrong")
-                        .padding()
-                        .background(Color.black.opacity(0.7))
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        .transition(.move(edge: .bottom))
-                        .padding()
-                }
+            .disabled(isSubmitting)
+            .frame(maxWidth: .infinity)
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.top, 16)
+        }
+        .padding()
+        .overlay(alignment: .bottom) {
+            if showToast {
+                Text("Something went wrong")
+                    .padding()
+                    .background(Color.black.opacity(0.7))
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .transition(.move(edge: .bottom))
+                    .padding()
             }
         }
         .navigationDestination(item: $result) { result in
