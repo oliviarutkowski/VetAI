@@ -44,7 +44,7 @@ struct ScanView: View {
                 Text("Enter value").tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: wbcIsUnknown) { isUnknown in
+            .onChange(of: wbcIsUnknown) { _, isUnknown in
                 if isUnknown { wbc = "" }
             }
             if !wbcIsUnknown {
@@ -69,7 +69,7 @@ struct ScanView: View {
                 Text("Enter value").tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: rbcIsUnknown) { isUnknown in
+            .onChange(of: rbcIsUnknown) { _, isUnknown in
                 if isUnknown { rbc = "" }
             }
             if !rbcIsUnknown {
@@ -94,7 +94,7 @@ struct ScanView: View {
                 Text("Enter value").tag(false)
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: glucoseIsUnknown) { isUnknown in
+            .onChange(of: glucoseIsUnknown) { _, isUnknown in
                 if isUnknown { glucose = "" }
             }
             if !glucoseIsUnknown {
