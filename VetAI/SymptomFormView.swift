@@ -13,10 +13,6 @@ struct SymptomFormView: View {
                     .accessibilityIdentifier("symptomField")
                     .frame(height: 200)
                     .border(Color.gray)
-                NavigationLink(destination: ResultsView(result: result!), isActive: Binding<Bool>(
-                    get: { result != nil },
-                    set: { _ in }
-                )) { EmptyView() }
                 Button(action: submit) {
                     if isSubmitting {
                         ProgressView()
@@ -42,6 +38,9 @@ struct SymptomFormView: View {
                         .padding()
                 }
             }
+        }
+        .navigationDestination(item: $result) { result in
+            ResultsView(result: result)
         }
     }
 
