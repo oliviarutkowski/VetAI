@@ -14,7 +14,7 @@ struct Pet: Identifiable, Hashable {
     var age: Int
 }
 
-struct DiagnosisRecord: Identifiable {
+struct DiagnosisRecord: Identifiable, Equatable {
     let id = UUID()
     var species: String
     var diagnosis: String

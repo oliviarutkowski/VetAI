@@ -50,7 +50,6 @@ struct ProfileView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .padding(Spacing.l)
-                .animation(.spring(response: 0.3, dampingFraction: 0.8), value: appState.pets)
             }
 #if os(iOS)
             .scrollDismissesKeyboard(.interactively)
@@ -69,7 +68,9 @@ struct ProfileView: View {
                         .focused($focusedField, equals: .petSpecies)
                     TextField("Age", text: $petAge)
                         .font(Typography.body)
+#if os(iOS)
                         .keyboardType(.numberPad)
+#endif
                         .focused($focusedField, equals: .petAge)
 
                     Button("Save") {
@@ -77,7 +78,9 @@ struct ProfileView: View {
                               !petSpecies.isEmpty,
                               let age = Int(petAge) else { return }
                         let pet = Pet(name: petName, species: petSpecies, age: age)
-                        appState.pets.append(pet)
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                            appState.pets.append(pet)
+                        }
 #if os(iOS)
                         UIImpactFeedbackGenerator(style: .light).impactOccurred()
 #endif

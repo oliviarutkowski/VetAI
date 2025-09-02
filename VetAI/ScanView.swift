@@ -33,7 +33,6 @@ struct ScanView: View {
                     Text(pet.name).tag(Optional(pet))
                 }
             }
-            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: appState.pets)
 
             SectionHeader("Labs")
 
@@ -122,37 +121,39 @@ struct ScanView: View {
                 .frame(minHeight: 100)
 
             Button("Analyze") {
-                if symptoms.lowercased().contains("lethargy") {
-                    diagnosis = "Possible anemia"
-                    confidenceScore = 70
-                } else {
-                    diagnosis = "No specific diagnosis"
-                    confidenceScore = 0
-                }
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    if symptoms.lowercased().contains("lethargy") {
+                        diagnosis = "Possible anemia"
+                        confidenceScore = 70
+                    } else {
+                        diagnosis = "No specific diagnosis"
+                        confidenceScore = 0
+                    }
 
-                let record = DiagnosisRecord(
-                    species: species,
-                    diagnosis: diagnosis,
-                    confidenceScore: confidenceScore,
-                    date: Date(),
-                    petID: selectedPet?.id
-                )
-                appState.diagnosisHistory.append(record)
+                    let record = DiagnosisRecord(
+                        species: species,
+                        diagnosis: diagnosis,
+                        confidenceScore: confidenceScore,
+                        date: Date(),
+                        petID: selectedPet?.id
+                    )
+                    appState.diagnosisHistory.append(record)
+
+                    species = "dog"
+                    symptoms = ""
+                    wbc = ""
+                    wbcIsUnknown = true
+                    rbc = ""
+                    rbcIsUnknown = true
+                    glucose = ""
+                    glucoseIsUnknown = true
+                    selectedPet = nil
+#if os(iOS)
+                    isSymptomsFocused = false
+#endif
+                }
 #if os(iOS)
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
-
-                species = "dog"
-                symptoms = ""
-                wbc = ""
-                wbcIsUnknown = true
-                rbc = ""
-                rbcIsUnknown = true
-                glucose = ""
-                glucoseIsUnknown = true
-                selectedPet = nil
-#if os(iOS)
-                isSymptomsFocused = false
 #endif
             }
             .frame(maxWidth: .infinity)
@@ -171,7 +172,6 @@ struct ScanView: View {
                 }
             }
         }
-        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: diagnosis)
 #if os(iOS)
         .scrollDismissesKeyboard(.interactively)
         .toolbar {
