@@ -7,24 +7,26 @@ struct TriageSection: View {
     @State private var showToast = false
 
     var body: some View {
-        VStack(alignment: .leading) {
-            TextEditor(text: $symptomText)
-                .accessibilityIdentifier("symptomField")
-                .frame(height: 200)
-                .border(Color.gray)
-            Button(action: submit) {
-                if isSubmitting {
-                    ProgressView()
-                } else {
-                    Text("Submit Symptoms")
+        ScrollView {
+            VStack(alignment: .leading) {
+                TextEditor(text: $symptomText)
+                    .accessibilityIdentifier("symptomField")
+                    .frame(height: 150)
+                    .border(Color.gray)
+                Button(action: submit) {
+                    if isSubmitting {
+                        ProgressView()
+                    } else {
+                        Text("Submit Symptoms")
+                    }
                 }
+                .disabled(isSubmitting)
+                .frame(maxWidth: .infinity)
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 16)
             }
-            .disabled(isSubmitting)
-            .frame(maxWidth: .infinity)
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.top, 16)
+            .padding()
         }
-        .padding()
         .overlay(alignment: .bottom) {
             if showToast {
                 Text("Something went wrong")
