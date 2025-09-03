@@ -112,31 +112,50 @@ struct ScanView: View {
             TriageSection()
 
             Button("Analyze") {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                    diagnosis = "No specific diagnosis"
-                    confidenceScore = 0
-
-                    let record = DiagnosisRecord(
-                        species: species,
-                        diagnosis: diagnosis,
-                        confidenceScore: confidenceScore,
-                        date: Date(),
-                        petID: selectedPet?.id
+                Task {
+                    let payload = CasePayload(
+                        pet: PetProfile(
+                            name: selectedPet?.name ?? "",
+                            species: species,
+                            age: selectedPet?.age ?? 0
+                        ),
+                        symptoms: [],
+                        exposures: nil
                     )
-                    appState.diagnosisHistory.append(record)
+                    do {
+                        let result = try await LLMClient.shared.triage(payload)
+                        let diff = result.differentials?.first
+                        await MainActor.run {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                diagnosis = diff?.condition ?? "No specific diagnosis"
+                                confidenceScore = diff?.confidencePct ?? 0
 
-                    species = "dog"
-                    wbc = ""
-                    wbcIsUnknown = true
-                    rbc = ""
-                    rbcIsUnknown = true
-                    glucose = ""
-                    glucoseIsUnknown = true
-                    selectedPet = nil
-                }
+                                let record = DiagnosisRecord(
+                                    species: species,
+                                    diagnosis: diagnosis,
+                                    confidenceScore: confidenceScore,
+                                    date: Date(),
+                                    petID: selectedPet?.id
+                                )
+                                appState.diagnosisHistory.append(record)
+
+                                species = "dog"
+                                wbc = ""
+                                wbcIsUnknown = true
+                                rbc = ""
+                                rbcIsUnknown = true
+                                glucose = ""
+                                glucoseIsUnknown = true
+                                selectedPet = nil
+                            }
 #if os(iOS)
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
 #endif
+                        }
+                    } catch {
+                        VetLog.e("Diagnostic error: \(error)")
+                    }
+                }
             }
             .frame(maxWidth: .infinity)
             .buttonStyle(PrimaryButtonStyle())

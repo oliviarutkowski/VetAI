@@ -28,19 +28,24 @@ struct ProfileView: View {
                     } else {
                         VStack(spacing: Spacing.md) {
                             ForEach(appState.pets) { pet in
-                                Card {
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(pet.name).font(.headline)
-                                            Text("\(pet.species), Age: \(pet.age)")
-                                                .font(.subheadline)
+                                NavigationLink {
+                                    PetDetailView(pet: pet)
+                                } label: {
+                                    Card {
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text(pet.name).font(.headline)
+                                                Text("\(pet.species), Age: \(pet.age)")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            Spacer()
+                                            Image(systemName: "chevron.right")
                                                 .foregroundColor(.secondary)
                                         }
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .foregroundColor(.secondary)
                                     }
                                 }
+                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -59,43 +64,48 @@ struct ProfileView: View {
         }
         .sheet(isPresented: $showAddPet) {
             NavigationStack {
-                VStack(spacing: Spacing.md) {
-                    TextField("Pet Name", text: $petName)
-                        .font(Typography.body)
-                        .focused($focusedField, equals: .petName)
-                    TextField("Species", text: $petSpecies)
-                        .font(Typography.body)
-                        .focused($focusedField, equals: .petSpecies)
-                    TextField("Age", text: $petAge)
-                        .font(Typography.body)
+                ScrollView {
+                    VStack(spacing: Spacing.md) {
+                        TextField("Pet Name", text: $petName)
+                            .font(Typography.body)
+                            .focused($focusedField, equals: .petName)
+                        TextField("Species", text: $petSpecies)
+                            .font(Typography.body)
+                            .focused($focusedField, equals: .petSpecies)
+                        TextField("Age", text: $petAge)
+                            .font(Typography.body)
 #if os(iOS)
-                        .keyboardType(.numberPad)
+                            .keyboardType(.numberPad)
 #endif
-                        .focused($focusedField, equals: .petAge)
+                            .focused($focusedField, equals: .petAge)
 
-                    Button("Save") {
-                        guard !petName.isEmpty,
-                              !petSpecies.isEmpty,
-                              let age = Int(petAge) else { return }
-                        let pet = Pet(name: petName, species: petSpecies, age: age)
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            appState.pets.append(pet)
+                        Button("Save") {
+                            guard !petName.isEmpty,
+                                  !petSpecies.isEmpty,
+                                  let age = Int(petAge) else { return }
+                            let pet = Pet(name: petName, species: petSpecies, age: age)
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                appState.pets.append(pet)
+                            }
+#if os(iOS)
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+#endif
+                            petName = ""
+                            petSpecies = ""
+                            petAge = ""
+                            showAddPet = false
+                            focusedField = nil
                         }
-#if os(iOS)
-                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
-                        petName = ""
-                        petSpecies = ""
-                        petAge = ""
-                        showAddPet = false
-                        focusedField = nil
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(.top, Spacing.md)
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(.top, Spacing.md)
 
-                    Spacer()
+                        Spacer()
+                    }
+                    .padding(Spacing.l)
                 }
-                .padding(Spacing.l)
+#if os(iOS)
+                .scrollDismissesKeyboard(.interactively)
+#endif
                 .navigationTitle("Add Pet")
                 .toolbar {
                     ToolbarItemGroup(placement: .keyboard) {
