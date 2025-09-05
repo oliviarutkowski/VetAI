@@ -23,8 +23,12 @@ struct HomeView: View {
                         }
                     }
 
-                    if let lastRecord = appState.diagnosisHistory.last {
-                        NavigationLink(destination: DiagnosisDetailView(record: lastRecord)) {
+                    if appState.diagnosisHistory.isEmpty {
+                        Text("No diagnoses yet — run your first AI check.")
+                            .font(Typography.body)
+                            .foregroundColor(.secondary)
+                    } else if let lastRecord = appState.diagnosisHistory.last {
+                        NavigationLink(destination: ResultsView(record: binding(for: lastRecord))) {
                             Card {
                                 SectionHeader("Recent Diagnosis")
                                 VStack(alignment: .leading) {
@@ -44,6 +48,12 @@ struct HomeView: View {
                                 }
                             }
                         }
+
+                        NavigationLink("View All") {
+                            HistoryView()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .frame(maxWidth: .infinity)
                     }
 
                     Button("Start New Diagnosis") {
@@ -51,52 +61,26 @@ struct HomeView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .frame(maxWidth: .infinity)
-
-                    if appState.diagnosisHistory.count > 1 {
-                        VStack(spacing: Spacing.md) {
-                            ForEach(Array(appState.diagnosisHistory.dropLast())) { record in
-                                NavigationLink(destination: DiagnosisDetailView(record: record)) {
-                                    Card {
-                                        VStack(alignment: .leading) {
-                                            if let petID = record.petID,
-                                               let pet = appState.pets.first(where: { $0.id == petID }) {
-                                                Text(pet.name)
-                                                    .font(.headline)
-                                            } else {
-                                                Text(record.species.capitalized)
-                                                    .font(.headline)
-                                            }
-                                            Text(record.diagnosis)
-                                            Text(record.date, style: .date)
-                                                .font(.subheadline)
-                                                .foregroundColor(.secondary)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
                 .padding(Spacing.l)
             }
             .background(Palette.surfaceAlt)
-            .navigationTitle("History")
-#if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-#endif
+            .navigationTitle("Home")
         }
+    }
+
+    private func binding(for record: DiagnosisRecord) -> Binding<DiagnosisRecord> {
+        guard let index = appState.diagnosisHistory.firstIndex(where: { $0.id == record.id }) else {
+            fatalError("Record not found")
+        }
+        return $appState.diagnosisHistory[index]
     }
 }
 
 #Preview {
     let appState = AppState()
     appState.diagnosisHistory = [
-        DiagnosisRecord(
-            species: "dog",
-            diagnosis: "Possible anemia",
-            confidenceScore: 70
-        )
+        DiagnosisRecord(species: "dog", diagnosis: "Possible anemia", triageLevel: "low", rationale: "", confidence: 0.7)
     ]
     return HomeView(selectedTab: .constant(0)).environmentObject(appState)
 }
-
