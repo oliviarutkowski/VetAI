@@ -1,1 +1,3 @@
 VetAI.xcconfig
+xcuserdata/
+*.xcuserstate
