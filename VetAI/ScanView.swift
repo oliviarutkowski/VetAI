@@ -1,5 +1,8 @@
 #if canImport(SwiftUI)
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct ScanView: View {
     @EnvironmentObject var appState: AppState
@@ -50,9 +53,11 @@ struct ScanView: View {
             }
             if !wbcIsUnknown {
                 HStack {
+#if canImport(UIKit)
                     TextField("e.g., 6.0", text: $wbc)
-#if os(iOS)
                         .keyboardType(.decimalPad)
+#else
+                    TextField("e.g., 6.0", text: $wbc)
 #endif
                         .font(Typography.body)
                     Spacer()
@@ -75,9 +80,11 @@ struct ScanView: View {
             }
             if !rbcIsUnknown {
                 HStack {
+#if canImport(UIKit)
                     TextField("e.g., 6.0", text: $rbc)
-#if os(iOS)
                         .keyboardType(.decimalPad)
+#else
+                    TextField("e.g., 6.0", text: $rbc)
 #endif
                         .font(Typography.body)
                     Spacer()
@@ -100,9 +107,11 @@ struct ScanView: View {
             }
             if !glucoseIsUnknown {
                 HStack {
+#if canImport(UIKit)
                     TextField("e.g., 6.0", text: $glucose)
-#if os(iOS)
                         .keyboardType(.decimalPad)
+#else
+                    TextField("e.g., 6.0", text: $glucose)
 #endif
                         .font(Typography.body)
                     Spacer()
@@ -131,7 +140,7 @@ struct ScanView: View {
             Button("Retry") { Task { await submit() } }
             Button("Cancel", role: .cancel) { }
         }
-#if os(iOS)
+#if canImport(UIKit)
         .scrollDismissesKeyboard(.interactively)
 #endif
     }
