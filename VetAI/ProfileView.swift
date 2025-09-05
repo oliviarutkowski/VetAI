@@ -22,7 +22,7 @@ struct ProfileView: View {
                     SectionHeader("Your Pets")
 
                     if appState.pets.isEmpty {
-                        Text("No pets added yet")
+                        Text("Add your first pet.")
                             .font(Typography.body)
                             .foregroundColor(.secondary)
                     } else {

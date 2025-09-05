@@ -9,9 +9,13 @@ struct ScanView: View {
     @State private var rbcIsUnknown: Bool = true
     @State private var glucose: String = ""
     @State private var glucoseIsUnknown: Bool = true
-    @State private var diagnosis: String = ""
-    @State private var confidenceScore: Int = 0
+    @State private var symptomText: String = ""
     @State private var selectedPet: Pet? = nil
+
+    @State private var isSubmitting = false
+    @State private var triageResult: DiagnosisRecord? = nil
+    @State private var errorMessage: String = ""
+    @State private var showError = false
 
     var body: some View {
         Form {
@@ -108,74 +112,81 @@ struct ScanView: View {
             }
 
             SectionHeader("Symptoms")
-
-            TriageSection()
+            TextEditor(text: $symptomText)
+                .frame(height: 150)
+                .border(Color.gray)
 
             Button("Analyze") {
-                Task {
-                    let payload = CasePayload(
-                        pet: PetProfile(
-                            name: selectedPet?.name ?? "",
-                            species: species,
-                            age: selectedPet?.age ?? 0
-                        ),
-                        symptoms: [],
-                        exposures: nil
-                    )
-                    do {
-                        let result = try await LLMClient.shared.triage(payload)
-                        let diff = result.differentials?.first
-                        await MainActor.run {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                diagnosis = diff?.condition ?? "No specific diagnosis"
-                                confidenceScore = diff?.confidencePct ?? 0
-
-                                let record = DiagnosisRecord(
-                                    species: species,
-                                    diagnosis: diagnosis,
-                                    confidenceScore: confidenceScore,
-                                    date: Date(),
-                                    petID: selectedPet?.id
-                                )
-                                appState.diagnosisHistory.append(record)
-
-                                species = "dog"
-                                wbc = ""
-                                wbcIsUnknown = true
-                                rbc = ""
-                                rbcIsUnknown = true
-                                glucose = ""
-                                glucoseIsUnknown = true
-                                selectedPet = nil
-                            }
-#if os(iOS)
-                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-#endif
-                        }
-                    } catch {
-                        VetLog.e("Diagnostic error: \(error)")
-                    }
-                }
+                Task { await submit() }
             }
+            .disabled(isSubmitting)
             .frame(maxWidth: .infinity)
             .buttonStyle(PrimaryButtonStyle())
-
-            if !diagnosis.isEmpty {
-                Card {
-                    VStack(alignment: .leading, spacing: Spacing.sm) {
-                        Text(diagnosis)
-                            .font(Typography.section)
-                        ProgressView("Confidence", value: Double(confidenceScore), total: 100)
-                        Text("Saved to history")
-                            .font(Typography.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
+        }
+        .navigationDestination(item: $triageResult) { record in
+            ResultsView(record: binding(for: record))
+        }
+        .alert(errorMessage, isPresented: $showError) {
+            Button("Retry") { Task { await submit() } }
+            Button("Cancel", role: .cancel) { }
         }
 #if os(iOS)
         .scrollDismissesKeyboard(.interactively)
 #endif
+    }
+
+    private func submit() async {
+        isSubmitting = true
+        defer { isSubmitting = false }
+
+        let payload = CasePayload(
+            pet: .init(name: selectedPet?.name ?? "", species: species, age: selectedPet?.age ?? 0),
+            symptoms: symptomText.isEmpty ? [] : [.init(description: symptomText, durationDays: nil)],
+            exposures: nil,
+            wbc: Double(wbc),
+            rbc: Double(rbc),
+            glucose: Double(glucose)
+        )
+
+        do {
+            let result = try await VetAIAPI().triage(payload)
+            let record = DiagnosisRecord(
+                species: species,
+                diagnosis: result.diagnosis,
+                triageLevel: result.triageLevel,
+                rationale: result.rationale,
+                confidence: result.confidence,
+                differentials: result.differentials,
+                notes: nil,
+                date: result.createdAt ?? Date(),
+                petID: selectedPet?.id
+            )
+            appState.diagnosisHistory.append(record)
+            triageResult = record
+            resetForm()
+        } catch {
+            errorMessage = "Submission failed."
+            showError = true
+        }
+    }
+
+    private func resetForm() {
+        species = "dog"
+        wbc = ""
+        wbcIsUnknown = true
+        rbc = ""
+        rbcIsUnknown = true
+        glucose = ""
+        glucoseIsUnknown = true
+        symptomText = ""
+        selectedPet = nil
+    }
+
+    private func binding(for record: DiagnosisRecord) -> Binding<DiagnosisRecord> {
+        guard let index = appState.diagnosisHistory.firstIndex(where: { $0.id == record.id }) else {
+            fatalError("Record not found")
+        }
+        return $appState.diagnosisHistory[index]
     }
 }
 
