@@ -1,4 +1,8 @@
+#if canImport(SwiftUI)
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct ScanView: View {
     @EnvironmentObject var appState: AppState
@@ -190,6 +194,9 @@ struct ScanView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ScanView().environmentObject(AppState())
 }
+#endif
+#endif

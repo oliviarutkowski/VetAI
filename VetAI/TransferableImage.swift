@@ -1,7 +1,7 @@
-import SwiftUI
-import UniformTypeIdentifiers
 #if canImport(UIKit)
+import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 /// Wrapper allowing ``UIImage`` instances to be used with ``ShareLink``.
 struct TransferableImage: Transferable {
