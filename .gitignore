@@ -1,1 +1,5 @@
 VetAI.xcconfig
+
+# Ignore Xcode user-specific data
+**/xcuserdata/
+*.xcuserstate
