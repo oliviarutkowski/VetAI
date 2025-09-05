@@ -56,7 +56,7 @@ struct ProfileView: View {
                 }
                 .padding(Spacing.l)
             }
-#if os(iOS)
+#if canImport(UIKit)
             .scrollDismissesKeyboard(.interactively)
 #endif
             .background(Palette.surfaceAlt)
@@ -74,7 +74,7 @@ struct ProfileView: View {
                             .focused($focusedField, equals: .petSpecies)
                         TextField("Age", text: $petAge)
                             .font(Typography.body)
-#if os(iOS)
+#if canImport(UIKit)
                             .keyboardType(.numberPad)
 #endif
                             .focused($focusedField, equals: .petAge)
@@ -87,7 +87,7 @@ struct ProfileView: View {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                                 appState.pets.append(pet)
                             }
-#if os(iOS)
+#if canImport(UIKit)
                             UIImpactFeedbackGenerator(style: .light).impactOccurred()
 #endif
                             petName = ""
@@ -103,7 +103,7 @@ struct ProfileView: View {
                     }
                     .padding(Spacing.l)
                 }
-#if os(iOS)
+#if canImport(UIKit)
                 .scrollDismissesKeyboard(.interactively)
 #endif
                 .navigationTitle("Add Pet")
