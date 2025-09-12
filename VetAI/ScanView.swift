@@ -50,11 +50,9 @@ struct ScanView: View {
             }
             if !wbcIsUnknown {
                 HStack {
+                    TextField("e.g., 6.0", text: $wbc)
 #if canImport(UIKit)
-                    TextField("e.g., 6.0", text: $wbc)
                         .keyboardType(.decimalPad)
-#else
-                    TextField("e.g., 6.0", text: $wbc)
 #endif
                         .font(Typography.body)
                     Spacer()
@@ -77,11 +75,9 @@ struct ScanView: View {
             }
             if !rbcIsUnknown {
                 HStack {
+                    TextField("e.g., 6.0", text: $rbc)
 #if canImport(UIKit)
-                    TextField("e.g., 6.0", text: $rbc)
                         .keyboardType(.decimalPad)
-#else
-                    TextField("e.g., 6.0", text: $rbc)
 #endif
                         .font(Typography.body)
                     Spacer()
@@ -104,11 +100,9 @@ struct ScanView: View {
             }
             if !glucoseIsUnknown {
                 HStack {
+                    TextField("e.g., 6.0", text: $glucose)
 #if canImport(UIKit)
-                    TextField("e.g., 6.0", text: $glucose)
                         .keyboardType(.decimalPad)
-#else
-                    TextField("e.g., 6.0", text: $glucose)
 #endif
                         .font(Typography.body)
                     Spacer()
@@ -130,7 +124,7 @@ struct ScanView: View {
             .frame(maxWidth: .infinity)
             .buttonStyle(PrimaryButtonStyle())
         }
-        .navigationDestination(item: $triageResult) { record in
+        .navigationDestination(item: $triageResult) { (record: DiagnosisRecord) in
             ResultsView(record: binding(for: record))
         }
         .alert(errorMessage, isPresented: $showError) {
